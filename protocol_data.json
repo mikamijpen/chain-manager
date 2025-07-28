@@ -1,0 +1,35 @@
+{
+    "task_chain": [],
+    "allowed_violations": [
+        {
+            "id": 1,
+            "description": "喝水上厕所回信息",
+            "timestamp": "2025-07-28 18:05:40",
+            "permanent": true
+        }
+    ],
+    "formulas": {
+        "formulas": [
+            {
+                "id": 1,
+                "name": "0点前认真洗漱后上床",
+                "parent": null,
+                "children": [],
+                "status": "活跃",
+                "last_active_time": "2025-07-29"
+            }
+        ],
+        "last_addition_date": "2025-07-28",
+        "active_tree_progress": {
+            "1": 0
+        }
+    },
+    "settings": {
+        "reservation_minutes": 15,
+        "task_minutes": 30
+    },
+    "longest_chain": 6,
+    "task_history": [
+        "#1 [4] -> #2 [3] -> #3 [2] -> #4 [4] -> #5 [5] -> #6 [6] -> #7 [6]"
+    ]
+}
