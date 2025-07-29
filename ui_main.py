@@ -246,6 +246,7 @@ class ChainDelayProtocolGUI:
         self.countdown_active = False
         self.countdown_end_time = None
         self.countdown_after_id = None
+        self.countdown_window = None
         
 
     def create_widgets(self):
@@ -430,9 +431,19 @@ class ChainDelayProtocolGUI:
             messagebox.showwarning("不活跃定式警告", message, parent=self.root)
 
     def start_countdown(self, minutes):
-        if self.countdown_label is None:
-            self.countdown_label = ttk.Label(self.root, text="", font=("Helvetica", 12, "bold"))
-            self.countdown_label.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
+        if self.countdown_window is None:
+            win = tk.Toplevel(self.root)
+            win.overrideredirect(True)
+            win.attributes("-topmost", True)
+            win.resizable(False, False)
+            # Small window size & position at bottom-right of screen
+            width, height = 100, 40
+            x = self.root.winfo_screenwidth() - width - 20
+            y = self.root.winfo_screenheight() - height - 60
+            win.geometry(f"{width}x{height}+{x}+{y}")
+            self.countdown_window = win
+            self.countdown_label = ttk.Label(win, text="", font=("Helvetica", 12, "bold"))
+            self.countdown_label.pack(expand=True, fill="both")
 
         self.countdown_end_time = time.time() + minutes * 60
         self.countdown_active = True
@@ -452,9 +463,9 @@ class ChainDelayProtocolGUI:
 
     def stop_countdown(self):
         self.countdown_active = False
-        if self.countdown_label:
-            self.countdown_label.config(text="")
-            self.countdown_label.place_forget()
+        if self.countdown_window:
+            self.countdown_window.destroy()
+            self.countdown_window = None
             self.countdown_label = None
         if self.countdown_after_id:
             self.root.after_cancel(self.countdown_after_id)

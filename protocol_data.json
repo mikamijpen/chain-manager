@@ -1,5 +1,11 @@
 {
-    "task_chain": [],
+    "task_chain": [
+        {
+            "id": 1,
+            "name": "update",
+            "timestamp": "2025-07-29 18:39:40"
+        }
+    ],
     "allowed_violations": [
         {
             "id": 1,
