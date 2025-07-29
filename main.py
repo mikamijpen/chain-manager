@@ -13,7 +13,7 @@ import time
 import threading
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
-from formula_manager import FormulaManager
+from formula_singleton import get_manager
 
 
 class ChainDelayProtocol:
@@ -23,7 +23,7 @@ class ChainDelayProtocol:
         self.update_callback = update_callback
 
         # 初始化定式管理器
-        self.formula_manager = FormulaManager(data_callback=self.save_data)
+        self.formula_manager = get_manager(data_callback=self.save_data)
         self.formula_manager.set_formulas_data(self.data.get("formulas", {}))
 
         # 运行时状态

@@ -13,7 +13,7 @@ import threading
 import time
 import sys
 from main import ChainDelayProtocol
-from formula_manager import FormulaManager
+from formula_singleton import get_manager  # noqa: F401 (imported for potential future use)
 
 def center_window(window):
     window.update_idletasks()
@@ -142,7 +142,7 @@ class FormulaManagerGUI:
 
         confirm = messagebox.askyesno("确认删除", f"确定要删除定式 '{formula['name']}' 及其所有子定式吗？", parent=self.window)
         if confirm:
-            success, deleted_names = self.formula_manager.remove_formula(remove_id)
+            success, deleted_names = self.formula_manager.remove_formula(remove_id, confirm=True)
             if success:
                 messagebox.showinfo("成功", f"定式 '{', '.join(deleted_names)}' 已被删除", parent=self.window)
                 self.refresh_tree()
@@ -310,8 +310,16 @@ class ChainDelayProtocolGUI:
         active_formulas_frame.grid(row=2, column=0, columnspan=2, sticky="ew", pady=(10, 0))
         active_formulas_frame.columnconfigure(0, weight=1)
 
-        self.formula_status_bar = ttk.Label(active_formulas_frame, text="---", wraplength=450, justify="left")
-        self.formula_status_bar.grid(row=0, column=0, sticky="ew")
+        # Use a scrolled text widget for easier viewing of long status messages
+        self.formula_status_bar = scrolledtext.ScrolledText(
+            active_formulas_frame,
+            height=4,
+            wrap='word',
+            state='disabled'
+        )
+        self.formula_status_bar.grid(row=0, column=0, sticky="nsew")
+        # Allow the text widget to expand with the frame
+        active_formulas_frame.rowconfigure(0, weight=1)
 
 
         sys.stdout = TextRedirector(self.log_text)
@@ -382,7 +390,11 @@ class ChainDelayProtocolGUI:
         display_text = self.protocol.formula_manager.get_active_formulas_display()
         if not display_text:
             display_text = "当前无活跃定式。"
-        self.formula_status_bar.config(text=display_text)
+        # Update the scrolled text widget
+        self.formula_status_bar.configure(state='normal')
+        self.formula_status_bar.delete('1.0', 'end')
+        self.formula_status_bar.insert('end', display_text)
+        self.formula_status_bar.configure(state='disabled')
 
     def execute_next_formula_level(self):
         """执行选定的活跃定式树的下一层"""
